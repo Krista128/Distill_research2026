@@ -13,6 +13,40 @@ Experiments show that pre‑training is critically important for a multimodal le
 
 --------
 
+## Quick Start
+
+Train your model (TeacherModel - for teacher, StudentModel1 - for miltimodal student, StudentModel2 - for unimodal student)
+
+```python
+import torch
+from test_dataset import RDataset
+import torchvision.transforms as transforms
+from torch.utils.data import DataLoader, Dataset
+import numpy as np 
+from model import TeacherModel, StudentModel1, StudentModel2
+import pickle
+import torch.nn as nn
+import torch.optim as optim
+
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+with open('your_dataset.pkl', 'rb') as f: # Read file
+    frames = pickle.load(f)
+
+observ, actions, targets= [], [], []
+for i in frames:
+    observ.append(i['observations'])
+    actions.append(i['actions'])
+    targets.append(i['targets'])
+
+observ = np.concatenate(observ, axis=0)
+actions = np.concatenate(actions, axis=0)
+targets = np.concatenate(targets, axis=0)
+
+
+--------
+
 ## Data format
 
 - Multimodal
