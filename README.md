@@ -123,6 +123,32 @@ with torch.no_grad(): # Evaluation
 
 ```
 --------
+## API
+
+### Models
+
+#### `TeacherModel`
+Multimodal policy: image + target coordinates → actions.
+
+```python
+class TeacherModel(nn.Module):
+    def __init__(self):
+        # ResNet-18  + MLP for goal
+        ...
+    def forward(self, image: Tensor, target: Tensor) -> Tensor:
+        """
+        image:  (B, 3, 84, 84)
+        target: (B, 2) — normalized target coordinates
+        return: (B, 2) — normalized actions
+        """
+```
+
+#### `StudentModel1`
+Multimodal student ученик: img + goal → action.
+
+#### `StudentModel2`
+Unimodal student: img → action.
+--------
 
 ## Data format
 
