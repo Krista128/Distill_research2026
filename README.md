@@ -13,3 +13,34 @@ Experiments show that pre‑training is critically important for a multimodal le
 
 --------
 
+## Data format
+
+- Multimodal
+
+```python
+
+frames = [
+    {
+        'observations': np.ndarray,  # (T, 84, 84, 3), dtype=uint8, значения [0, 255]
+        'actions':      np.ndarray,  # (T, 2), dtype=float32, крутящие моменты
+        'targets':      np.ndarray,  # (T, 2), dtype=float32, координаты цели (x, y)
+        'success':      bool,        # достиг ли эксперт цели
+        'length':       int,         # T — число кадров в эпизоде
+    },
+    ...
+]
+```
+
+- Unimodal
+
+```python
+frames = [
+    {
+        'observations': np.ndarray,  # (T, 84, 84, 3), dtype=uint8, значения [0, 255]
+        'actions':      np.ndarray,  # (T, 2), dtype=float32, крутящие моменты
+        'success':      bool,        # достиг ли эксперт цели
+        'length':       int,         # T — число кадров в эпизоде
+    },
+    ...
+]
+```
