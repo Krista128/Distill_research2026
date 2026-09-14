@@ -144,9 +144,11 @@ class TeacherModel(nn.Module):
 ```
 
 #### `StudentModel1`
+
 Multimodal student ученик: img + goal → action.
 
 #### `StudentModel2`
+
 Unimodal student: img → action.
 --------
 
