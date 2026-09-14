@@ -142,7 +142,6 @@ class TeacherModel(nn.Module):
         return: (B, 2) — normalized actions
         """
 ```
-
 #### `StudentModel1`
 
 Multimodal student ученик: img + goal → action.
@@ -150,6 +149,7 @@ Multimodal student ученик: img + goal → action.
 #### `StudentModel2`
 
 Unimodal student: img → action.
+
 --------
 
 ## Data format
