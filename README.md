@@ -54,7 +54,58 @@ targets_norm = (targets - targets_mean) / targets_std
 
 model = TeacherModel().to(device)
 state_dict = torch.load('teacher.pth', map_location=device, weights_only=False) # Load weight
-modelTeacher.load_state_dict(state_dict['state_dict'])
+model.load_state_dict(state_dict['state_dict'])
+model.eval()
+
+with torch.no_grad(): # Evaluation
+    mae = 0
+    for imgs, acts, target in val_loader:
+        imgs, acts, target = imgs.to(device), acts.to(device), target.to(device)
+        outputs = model_teacher(imgs) # without target
+    
+        y_pred = outputs.cpu().numpy()
+        y_true = acts.cpu().numpy() 
+
+        mae += mean_absolute_error(y_true, y_pred)
+    print(f"MAE: {mae / 300}")
+    MAE.append(mae / 300)
+
+```
+
+Unimodal student
+
+```python
+import torch
+from test_dataset import RDataset
+import torchvision.transforms as transforms
+from torch.utils.data import DataLoader, Dataset
+import numpy as np 
+from model import TeacherModel, StudentModel1, StudentModel2 # from model.py
+import pickle
+import torch.nn as nn
+import torch.optim as optim
+
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+with open('your_dataset.pkl', 'rb') as f: # Read file
+    frames = pickle.load(f)
+
+observ, actions, targets= [], [], []
+for i in frames:
+    observ.append(i['observations'])
+    actions.append(i['actions'])
+
+observ = np.concatenate(observ, axis=0)
+actions = np.concatenate(actions, axis=0)
+
+actions_mean = actions.mean(axis=0) # normalization
+actions_std  = actions.std(axis=0) + 1e-8
+actions_norm = (actions - actions_mean) / actions_std
+
+model = StudentModel2().to(device)
+state_dict = torch.load('teacher.pth', map_location=device, weights_only=False) # Load weight
+model.load_state_dict(state_dict['state_dict'])
 model.eval()
 
 with torch.no_grad(): # Evaluation
