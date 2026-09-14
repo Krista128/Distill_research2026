@@ -23,7 +23,7 @@ from test_dataset import RDataset
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 import numpy as np 
-from model import TeacherModel, StudentModel1, StudentModel2
+from model import TeacherModel, StudentModel1, StudentModel2 # from model.py
 import pickle
 import torch.nn as nn
 import torch.optim as optim
@@ -44,7 +44,7 @@ observ = np.concatenate(observ, axis=0)
 actions = np.concatenate(actions, axis=0)
 targets = np.concatenate(targets, axis=0)
 
-actions_mean = actions.mean(axis=0)
+actions_mean = actions.mean(axis=0) # normalization
 actions_std  = actions.std(axis=0) + 1e-8
 actions_norm = (actions - actions_mean) / actions_std
 
@@ -53,11 +53,11 @@ targets_std  = targets.std(axis=0) + 1e-8
 targets_norm = (targets - targets_mean) / targets_std
 
 model = TeacherModel().to(device)
-state_dict = torch.load('teacher.pth', map_location=device, weights_only=False)
+state_dict = torch.load('teacher.pth', map_location=device, weights_only=False) # Load weight
 modelTeacher.load_state_dict(state_dict['state_dict'])
 model.eval()
 
-with torch.no_grad():
+with torch.no_grad(): # Evaluation
     mae = 0
     for imgs, acts, target in val_loader:
         imgs, acts, target = imgs.to(device), acts.to(device), target.to(device)
