@@ -15,7 +15,7 @@ Experiments show that pre‑training is critically important for a multimodal le
 
 ## Quick Start
 
-Train your model (TeacherModel - for teacher, StudentModel1 - for miltimodal student, StudentModel2 - for unimodal student)
+Load model (TeacherModel - for teacher, StudentModel1 - for miltimodal student, StudentModel2 - for unimodal student)
 
 ```python
 import torch
@@ -43,6 +43,32 @@ for i in frames:
 observ = np.concatenate(observ, axis=0)
 actions = np.concatenate(actions, axis=0)
 targets = np.concatenate(targets, axis=0)
+
+actions_mean = actions.mean(axis=0)
+actions_std  = actions.std(axis=0) + 1e-8
+actions_norm = (actions - actions_mean) / actions_std
+
+targets_mean = targets.mean(axis=0)
+targets_std  = targets.std(axis=0) + 1e-8
+targets_norm = (targets - targets_mean) / targets_std
+
+model = TeacherModel().to(device)
+state_dict = torch.load('teacher.pth', map_location=device, weights_only=False)
+modelTeacher.load_state_dict(state_dict['state_dict'])
+model.eval()
+
+with torch.no_grad():
+    mae = 0
+    for imgs, acts, target in val_loader:
+        imgs, acts, target = imgs.to(device), acts.to(device), target.to(device)
+        outputs = model_teacher(imgs, target) 
+    
+        y_pred = outputs.cpu().numpy()
+        y_true = acts.cpu().numpy() 
+
+        mae += mean_absolute_error(y_true, y_pred)
+    print(f"MAE: {mae / 300}")
+    MAE.append(mae / 300)
 
 ```
 --------
